@@ -167,6 +167,9 @@ npm install -g pnpm
       nodeEsModules = false
       /// adhere's to node's standards for es module usage by adding extensions to relative imports
       /// nodeEsModules = true
+    
+      excludeCreateUpdate = false
+      /// do not generate create and update models
     }
     ```
 

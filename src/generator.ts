@@ -170,8 +170,10 @@ export const populateModelFile = (
     generateRelationsSchema(model, sourceFile, config, prismaOptions)
 
   generateSchema(model, sourceFile, config, prismaOptions)
-  generateCreateSchema(model, sourceFile, config, prismaOptions)
-  generateUpdateSchema(model, sourceFile, config, prismaOptions)
+  if(!config.excludeCreateUpdate) {
+    generateCreateSchema(model, sourceFile, config, prismaOptions)
+    generateUpdateSchema(model, sourceFile, config, prismaOptions)
+  }
 }
 
 export const generateBarrelFile = (
@@ -190,8 +192,7 @@ export const generateBarrelFile = (
       }`,
       namedExports: [
         schema(model.name),
-        createSchema(model.name),
-        updateSchema(model.name),
+        ...(config.excludeCreateUpdate ? [] : [createSchema(model.name), updateSchema(model.name)]),
       ],
     }),
   )

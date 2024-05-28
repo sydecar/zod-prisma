@@ -17,6 +17,7 @@ export const configSchema = z
     schemaSuffix: z.string().default("Schema"),
     schemaCase: z.enum(["PascalCase", "camelCase"]).default("camelCase"),
     nodeEsModules: configBoolean.default("false"),
+    excludeCreateUpdate: configBoolean.default("false"),
 
     // Deprecated config options
     moduleSuffix: z.undefined({
