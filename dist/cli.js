@@ -178,7 +178,7 @@ var init_types = __esm({
         extraModifiers.push(...computeModifiers(field.documentation));
       }
       if (!field.isRequired)
-        extraModifiers.push("nullable()");
+        extraModifiers.push("nullish()");
       return `${zodType}${extraModifiers.join(".")}`;
     };
   }

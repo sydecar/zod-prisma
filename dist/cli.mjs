@@ -9,7 +9,7 @@ async function main() {
     console.error(RED, "Please makes sure to install zod first.");
     process.exit(1);
   } finally {
-    import("./src-OFLUJZ7L.mjs");
+    import("./src-QYJQYFSM.mjs");
   }
 }
 main();
