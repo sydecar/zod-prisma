@@ -11,13 +11,13 @@ export const presentationBaseSchema = z.object({
 
 export const presentationSchema = presentationBaseSchema
 
-export const presentationCreateSchema = presentationBaseSchema.partial({
+export const presentationCreateSchema = presentationSchema.partial({
   id: true,
   contents: true,
   created: true,
   updated: true,
 })
 
-export const presentationUpdateSchema = presentationBaseSchema
+export const presentationUpdateSchema = presentationSchema
   .partial()
   

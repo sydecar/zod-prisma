@@ -11,12 +11,12 @@ export const documentBaseSchema = z.object({
 
 export const documentSchema = documentBaseSchema
 
-export const documentCreateSchema = documentBaseSchema.partial({
+export const documentCreateSchema = documentSchema.partial({
   id: true,
   created: true,
   updated: true,
 })
 
-export const documentUpdateSchema = documentBaseSchema
+export const documentUpdateSchema = documentSchema
   .partial()
   

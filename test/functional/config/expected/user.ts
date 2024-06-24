@@ -20,11 +20,11 @@ export const UserRelationsModel: z.ZodObject<{
 export const UserModel = UserBaseModel
   .merge(UserRelationsModel)
 
-export const UserCreateModel = UserBaseModel.partial({
+export const UserCreateModel = UserModel.partial({
   id: true,
   posts: true,
 })
 
-export const UserUpdateModel = UserBaseModel
+export const UserUpdateModel = UserModel
   .partial()
   

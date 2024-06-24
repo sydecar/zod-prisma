@@ -18,10 +18,10 @@ export const keychainRelationsSchema: z.ZodObject<{
 export const keychainSchema = keychainBaseSchema
   .merge(keychainRelationsSchema)
 
-export const keychainCreateSchema = keychainBaseSchema.partial({
+export const keychainCreateSchema = keychainSchema.partial({
   userID: true,
 })
 
-export const keychainUpdateSchema = keychainBaseSchema
+export const keychainUpdateSchema = keychainSchema
   .partial()
   

@@ -178,7 +178,7 @@ var init_types = __esm({
         extraModifiers.push(...computeModifiers(field.documentation));
       }
       if (!field.isRequired)
-        extraModifiers.push("nullish()");
+        extraModifiers.push("nullable()");
       return `${zodType}${extraModifiers.join(".")}`;
     };
   }
@@ -290,7 +290,7 @@ var init_schemas = __esm({
       });
     };
     generateCreateSchema = (model, sourceFile, config, _prismaOptions) => {
-      const { baseSchema, createSchema } = schemaNameFormatter(config);
+      const { schema, createSchema } = schemaNameFormatter(config);
       sourceFile.addVariableStatement({
         declarationKind: import_ts_morph.VariableDeclarationKind.Const,
         isExported: true,
@@ -299,20 +299,22 @@ var init_schemas = __esm({
           {
             name: createSchema(model.name),
             initializer: (writer) => {
-              writer.write(`${baseSchema(model.name)}`);
-              const partialFields = model.fields.filter(
-                (field) => field.hasDefaultValue || !field.isRequired || field.isGenerated || field.isUpdatedAt || field.isList || model.fields.find(
+              writer.write(`${schema(model.name)}`);
+              const partialFields = model.fields.filter((field) => {
+                if (field.relationName && config.excludeRelations)
+                  return false;
+                return field.hasDefaultValue || !field.isRequired || field.isGenerated || field.isUpdatedAt || field.isList || model.fields.find(
                   (f) => {
                     var _a;
                     return (_a = f.relationFromFields) == null ? void 0 : _a.includes(field.name);
                   }
-                )
-              );
+                );
+              });
               if (model.fields.some((f) => !f.isRequired && f.kind !== "object")) {
                 writer.newLine().write(".extend(").inlineBlock(() => {
                   model.fields.filter((f) => !f.isRequired && f.kind !== "object").map((field) => {
                     writer.writeLine(
-                      `${field.name}: ${baseSchema(model.name)}.shape.${field.name}.unwrap(),`
+                      `${field.name}: ${schema(model.name)}.shape.${field.name}.unwrap(),`
                     );
                   });
                 }).write(")");
@@ -331,7 +333,7 @@ var init_schemas = __esm({
       });
     };
     generateUpdateSchema = (model, sourceFile, config, _prismaOptions) => {
-      const { baseSchema, updateSchema } = schemaNameFormatter(config);
+      const { schema, updateSchema } = schemaNameFormatter(config);
       sourceFile.addVariableStatement({
         declarationKind: import_ts_morph.VariableDeclarationKind.Const,
         isExported: true,
@@ -340,12 +342,12 @@ var init_schemas = __esm({
           {
             name: updateSchema(model.name),
             initializer: (writer) => {
-              writer.write(`${baseSchema(model.name)}`);
+              writer.write(`${schema(model.name)}`);
               if (model.fields.some((f) => !f.isRequired && f.kind !== "object")) {
                 writer.newLine().write(".extend(").inlineBlock(() => {
                   model.fields.filter((f) => !f.isRequired && f.kind !== "object").map((field) => {
                     writer.writeLine(
-                      `${field.name}: ${baseSchema(model.name)}.shape.${field.name}.unwrap(),`
+                      `${field.name}: ${schema(model.name)}.shape.${field.name}.unwrap(),`
                     );
                   });
                 }).write(")");

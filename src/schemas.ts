@@ -145,7 +145,7 @@ export const generateCreateSchema = (
   config: Config,
   _prismaOptions: PrismaOptions,
 ) => {
-  const { baseSchema, createSchema } = schemaNameFormatter(config)
+  const { schema, createSchema } = schemaNameFormatter(config)
 
   sourceFile.addVariableStatement({
     declarationKind: VariableDeclarationKind.Const,
@@ -155,10 +155,12 @@ export const generateCreateSchema = (
       {
         name: createSchema(model.name),
         initializer: (writer) => {
-          writer.write(`${baseSchema(model.name)}`)
+          writer.write(`${schema(model.name)}`)
 
-          const partialFields = model.fields.filter(
-            (field) =>
+          const partialFields = model.fields.filter((field) => {
+            if (field.relationName && config.excludeRelations) return false
+
+            return (
               field.hasDefaultValue ||
               !field.isRequired ||
               field.isGenerated ||
@@ -166,8 +168,9 @@ export const generateCreateSchema = (
               field.isList ||
               model.fields.find((f) =>
                 f.relationFromFields?.includes(field.name),
-              ),
-          )
+              )
+            )
+          })
 
           if (model.fields.some((f) => !f.isRequired && f.kind !== "object")) {
             writer
@@ -178,7 +181,7 @@ export const generateCreateSchema = (
                   .filter((f) => !f.isRequired && f.kind !== "object")
                   .map((field) => {
                     writer.writeLine(
-                      `${field.name}: ${baseSchema(model.name)}.shape.${
+                      `${field.name}: ${schema(model.name)}.shape.${
                         field.name
                       }.unwrap(),`,
                     )
@@ -208,7 +211,7 @@ export const generateUpdateSchema = (
   config: Config,
   _prismaOptions: PrismaOptions,
 ) => {
-  const { baseSchema, updateSchema } = schemaNameFormatter(config)
+  const { schema, updateSchema } = schemaNameFormatter(config)
 
   sourceFile.addVariableStatement({
     declarationKind: VariableDeclarationKind.Const,
@@ -218,7 +221,7 @@ export const generateUpdateSchema = (
       {
         name: updateSchema(model.name),
         initializer: (writer) => {
-          writer.write(`${baseSchema(model.name)}`)
+          writer.write(`${schema(model.name)}`)
 
           if (model.fields.some((f) => !f.isRequired && f.kind !== "object")) {
             writer
@@ -229,7 +232,7 @@ export const generateUpdateSchema = (
                   .filter((f) => !f.isRequired && f.kind !== "object")
                   .map((field) => {
                     writer.writeLine(
-                      `${field.name}: ${baseSchema(model.name)}.shape.${
+                      `${field.name}: ${schema(model.name)}.shape.${
                         field.name
                       }.unwrap(),`,
                     )

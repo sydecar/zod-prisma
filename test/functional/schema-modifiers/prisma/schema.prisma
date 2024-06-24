@@ -11,7 +11,6 @@ generator zod {
   output   = "../expected/"
 }
 
-/// @zod.refine((val) => val.type === 'PRIVATE' || val.company !== null, { path: ['company'], message: 'Required if type is company' })
 model Address {
   id      String      @id @unique @default(uuid())
   type    AddressType

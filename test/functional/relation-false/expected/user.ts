@@ -8,11 +8,10 @@ export const userBaseSchema = z.object({
 
 export const userSchema = userBaseSchema
 
-export const userCreateSchema = userBaseSchema.partial({
+export const userCreateSchema = userSchema.partial({
   id: true,
-  posts: true,
 })
 
-export const userUpdateSchema = userBaseSchema
+export const userUpdateSchema = userSchema
   .partial()
   

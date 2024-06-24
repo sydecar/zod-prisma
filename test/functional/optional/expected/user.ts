@@ -27,18 +27,18 @@ export const userRelationsSchema: z.ZodObject<{
 export const userSchema = userBaseSchema
   .merge(userRelationsSchema)
 
-export const userCreateSchema = userBaseSchema
+export const userCreateSchema = userSchema
   .extend({
-    meta: userBaseSchema.shape.meta.unwrap(),
+    meta: userSchema.shape.meta.unwrap(),
   }).partial({
     id: true,
     meta: true,
     posts: true,
   })
 
-export const userUpdateSchema = userBaseSchema
+export const userUpdateSchema = userSchema
   .extend({
-    meta: userBaseSchema.shape.meta.unwrap(),
+    meta: userSchema.shape.meta.unwrap(),
   })
   .partial()
   
