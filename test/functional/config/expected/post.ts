@@ -21,11 +21,11 @@ export const PostRelationsModel: z.ZodObject<{
 export const PostModel = PostBaseModel
   .merge(PostRelationsModel)
 
-export const PostCreateModel = PostBaseModel.partial({
+export const PostCreateModel = PostModel.partial({
   id: true,
   userId: true,
 })
 
-export const PostUpdateModel = PostBaseModel
+export const PostUpdateModel = PostModel
   .partial()
   

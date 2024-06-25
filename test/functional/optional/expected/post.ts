@@ -19,12 +19,12 @@ export const postRelationsSchema: z.ZodObject<{
 export const postSchema = postBaseSchema
   .merge(postRelationsSchema)
 
-export const postCreateSchema = postBaseSchema.partial({
+export const postCreateSchema = postSchema.partial({
   id: true,
   authorId: true,
   author: true,
 })
 
-export const postUpdateSchema = postBaseSchema
+export const postUpdateSchema = postSchema
   .partial()
   

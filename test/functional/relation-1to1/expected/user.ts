@@ -18,11 +18,11 @@ export const userRelationsSchema: z.ZodObject<{
 export const userSchema = userBaseSchema
   .merge(userRelationsSchema)
 
-export const userCreateSchema = userBaseSchema.partial({
+export const userCreateSchema = userSchema.partial({
   id: true,
   keychain: true,
 })
 
-export const userUpdateSchema = userBaseSchema
+export const userUpdateSchema = userSchema
   .partial()
   

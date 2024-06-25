@@ -9,11 +9,11 @@ export const postBaseSchema = z.object({
 
 export const postSchema = postBaseSchema
 
-export const postCreateSchema = postBaseSchema.partial({
+export const postCreateSchema = postSchema.partial({
   id: true,
   userId: true,
 })
 
-export const postUpdateSchema = postBaseSchema
+export const postUpdateSchema = postSchema
   .partial()
   

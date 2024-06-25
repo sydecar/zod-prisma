@@ -31,13 +31,13 @@ export const spreadsheetRelationsSchema: z.ZodObject<{
 export const spreadsheetSchema = spreadsheetBaseSchema
   .merge(spreadsheetRelationsSchema)
 
-export const spreadsheetCreateSchema = spreadsheetBaseSchema.partial({
+export const spreadsheetCreateSchema = spreadsheetSchema.partial({
   id: true,
   presentations: true,
   created: true,
   updated: true,
 })
 
-export const spreadsheetUpdateSchema = spreadsheetBaseSchema
+export const spreadsheetUpdateSchema = spreadsheetSchema
   .partial()
   

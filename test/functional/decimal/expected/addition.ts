@@ -24,10 +24,10 @@ export const additionBaseSchema = z.object({
 
 export const additionSchema = additionBaseSchema
 
-export const additionCreateSchema = additionBaseSchema.partial({
+export const additionCreateSchema = additionSchema.partial({
   id: true,
 })
 
-export const additionUpdateSchema = additionBaseSchema
+export const additionUpdateSchema = additionSchema
   .partial()
   

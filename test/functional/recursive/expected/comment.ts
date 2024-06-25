@@ -22,13 +22,13 @@ export const commentRelationsSchema: z.ZodObject<{
 export const commentSchema = commentBaseSchema
   .merge(commentRelationsSchema)
 
-export const commentCreateSchema = commentBaseSchema.partial({
+export const commentCreateSchema = commentSchema.partial({
   id: true,
   parentId: true,
   parent: true,
   children: true,
 })
 
-export const commentUpdateSchema = commentBaseSchema
+export const commentUpdateSchema = commentSchema
   .partial()
   

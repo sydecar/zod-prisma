@@ -23,7 +23,7 @@ export const presentationRelationsSchema: z.ZodObject<{
 export const presentationSchema = presentationBaseSchema
   .merge(presentationRelationsSchema)
 
-export const presentationCreateSchema = presentationBaseSchema.partial({
+export const presentationCreateSchema = presentationSchema.partial({
   id: true,
   contents: true,
   spreadsheets: true,
@@ -31,6 +31,6 @@ export const presentationCreateSchema = presentationBaseSchema.partial({
   updated: true,
 })
 
-export const presentationUpdateSchema = presentationBaseSchema
+export const presentationUpdateSchema = presentationSchema
   .partial()
   

@@ -11,19 +11,18 @@ export const addressBaseSchema = z.object({
 })
 
 export const addressSchema = addressBaseSchema
-  .refine((val) => val.type === 'PRIVATE' || val.company !== null, { path: ['company'], message: 'Required if type is company' })
 
-export const addressCreateSchema = addressBaseSchema
+export const addressCreateSchema = addressSchema
   .extend({
-    company: addressBaseSchema.shape.company.unwrap(),
+    company: addressSchema.shape.company.unwrap(),
   }).partial({
     id: true,
     company: true,
   })
 
-export const addressUpdateSchema = addressBaseSchema
+export const addressUpdateSchema = addressSchema
   .extend({
-    company: addressBaseSchema.shape.company.unwrap(),
+    company: addressSchema.shape.company.unwrap(),
   })
   .partial()
   

@@ -59,7 +59,7 @@ describe.concurrent("Functional Tests", () => {
 
     const outputPath = path.resolve(
       path.dirname(schemaFile),
-      generator.output!.value,
+      generator.output!.value || "",
     )
 
     const prismaOptions: PrismaOptions = {
