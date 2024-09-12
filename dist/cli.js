@@ -395,8 +395,8 @@ var init_generator = __esm({
       if (config.decimalJs && model.fields.some((f) => f.type === "Decimal")) {
         importList.push({
           kind: import_ts_morph2.StructureKind.ImportDeclaration,
-          namedImports: ["Decimal"],
-          moduleSpecifier: "decimal.js"
+          namedImports: ["Prisma"],
+          moduleSpecifier: "@prisma/client"
         });
       }
       const enumFields = model.fields.filter((f) => f.kind === "enum");
@@ -454,17 +454,8 @@ var init_generator = __esm({
           writeArray(writer, [
             "// Helper schema for Decimal fields",
             "const decimalSchema = z",
-            ".instanceof(Decimal)",
-            ".or(z.string())",
-            ".or(z.number())",
-            ".refine((value) => {",
-            "  try {",
-            "    return new Decimal(value);",
-            "  } catch (error) {",
-            "    return false;",
-            "  }",
-            "})",
-            ".transform((value) => new Decimal(value));"
+            ".union([z.number(), z.instanceof(Prisma.Decimal)])",
+            ".transform((value) => value instanceof Prisma.Decimal ? value.toNumber() : value);"
           ]);
         });
       }

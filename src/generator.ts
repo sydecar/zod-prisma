@@ -60,8 +60,8 @@ export const writeImportsForModel = (
   if (config.decimalJs && model.fields.some((f) => f.type === "Decimal")) {
     importList.push({
       kind: StructureKind.ImportDeclaration,
-      namedImports: ["Decimal"],
-      moduleSpecifier: "decimal.js",
+      namedImports: ["Prisma"],
+      moduleSpecifier: "@prisma/client",
     })
   }
 
@@ -140,17 +140,8 @@ export const writeTypeSpecificSchemas = (
       writeArray(writer, [
         "// Helper schema for Decimal fields",
         "const decimalSchema = z",
-        ".instanceof(Decimal)",
-        ".or(z.string())",
-        ".or(z.number())",
-        ".refine((value) => {",
-        "  try {",
-        "    return new Decimal(value);",
-        "  } catch (error) {",
-        "    return false;",
-        "  }",
-        "})",
-        ".transform((value) => new Decimal(value));",
+        ".union([z.number(), z.instanceof(Prisma.Decimal)])",
+        ".transform((value) => value instanceof Prisma.Decimal ? value.toNumber() : value);",
       ])
     })
   }
@@ -170,7 +161,7 @@ export const populateModelFile = (
     generateRelationsSchema(model, sourceFile, config, prismaOptions)
 
   generateSchema(model, sourceFile, config, prismaOptions)
-  if(!config.excludeCreateUpdate) {
+  if (!config.excludeCreateUpdate) {
     generateCreateSchema(model, sourceFile, config, prismaOptions)
     generateUpdateSchema(model, sourceFile, config, prismaOptions)
   }
@@ -192,7 +183,9 @@ export const generateBarrelFile = (
       }`,
       namedExports: [
         schema(model.name),
-        ...(config.excludeCreateUpdate ? [] : [createSchema(model.name), updateSchema(model.name)]),
+        ...(config.excludeCreateUpdate
+          ? []
+          : [createSchema(model.name), updateSchema(model.name)]),
       ],
     }),
   )
