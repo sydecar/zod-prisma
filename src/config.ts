@@ -1,3 +1,4 @@
+// This file was created in whole or in part by Generative AI
 import { z } from "zod"
 
 const configBoolean = z
@@ -18,14 +19,6 @@ export const configSchema = z
     schemaCase: z.enum(["PascalCase", "camelCase"]).default("camelCase"),
     nodeEsModules: configBoolean.default("false"),
     excludeCreateUpdate: configBoolean.default("false"),
-
-    // Deprecated config options
-    moduleSuffix: z.undefined({
-      description: "moduleSuffix was renamed to 'schemaSuffix' in v1.0.0",
-    }),
-    moduleCase: z.undefined({
-      description: "moduleCase was renamed to 'schemaCase' in v1.0.0",
-    }),
   })
   .strict("Config cannot contain extra options")
 

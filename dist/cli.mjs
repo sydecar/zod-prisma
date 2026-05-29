@@ -9,7 +9,7 @@ async function main() {
     console.error(RED, "Please makes sure to install zod first.");
     process.exit(1);
   } finally {
-    import("./src-AJPDNFTV.mjs");
+    import("./src-ZAAVRHQ6.mjs");
   }
 }
 main();

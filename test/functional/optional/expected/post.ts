@@ -22,7 +22,6 @@ export const postSchema = postBaseSchema
 export const postCreateSchema = postBaseSchema.partial({
   id: true,
   authorId: true,
-  author: true,
 })
 
 export const postUpdateSchema = postBaseSchema

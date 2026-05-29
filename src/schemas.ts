@@ -1,3 +1,4 @@
+// This file was created in whole or in part by Generative AI
 import type { DMMF } from "@prisma/generator-helper"
 import { SourceFile, VariableDeclarationKind } from "ts-morph"
 import type { Config, PrismaOptions } from "./config"
@@ -159,14 +160,17 @@ export const generateCreateSchema = (
 
           const partialFields = model.fields.filter(
             (field) =>
-              field.hasDefaultValue ||
-              !field.isRequired ||
-              field.isGenerated ||
-              field.isUpdatedAt ||
-              field.isList ||
-              model.fields.find((f) =>
-                f.relationFromFields?.includes(field.name),
-              ),
+              // Relation fields are not part of the base schema, so they must
+              // never appear in the .partial() mask (would be an invalid key).
+              field.kind !== "object" &&
+              (field.hasDefaultValue ||
+                !field.isRequired ||
+                field.isGenerated ||
+                field.isUpdatedAt ||
+                field.isList ||
+                model.fields.find((f) =>
+                  f.relationFromFields?.includes(field.name),
+                )),
           )
 
           if (model.fields.some((f) => !f.isRequired && f.kind !== "object")) {
@@ -177,10 +181,13 @@ export const generateCreateSchema = (
                 model.fields
                   .filter((f) => !f.isRequired && f.kind !== "object")
                   .map((field) => {
+                    // Non-required scalars are nullish() in the base schema
+                    // (ZodOptional<ZodNullable<T>>), so unwrap both layers to
+                    // recover the bare type before re-marking it partial.
                     writer.writeLine(
                       `${field.name}: ${baseSchema(model.name)}.shape.${
                         field.name
-                      }.unwrap(),`,
+                      }.unwrap().unwrap(),`,
                     )
                   })
               })
@@ -228,10 +235,13 @@ export const generateUpdateSchema = (
                 model.fields
                   .filter((f) => !f.isRequired && f.kind !== "object")
                   .map((field) => {
+                    // Non-required scalars are nullish() in the base schema
+                    // (ZodOptional<ZodNullable<T>>), so unwrap both layers to
+                    // recover the bare type before re-marking it partial.
                     writer.writeLine(
                       `${field.name}: ${baseSchema(model.name)}.shape.${
                         field.name
-                      }.unwrap(),`,
+                      }.unwrap().unwrap(),`,
                     )
                   })
               })

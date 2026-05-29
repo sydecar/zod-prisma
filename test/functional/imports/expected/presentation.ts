@@ -26,7 +26,6 @@ export const presentationSchema = presentationBaseSchema
 export const presentationCreateSchema = presentationBaseSchema.partial({
   id: true,
   contents: true,
-  spreadsheets: true,
   created: true,
   updated: true,
 })

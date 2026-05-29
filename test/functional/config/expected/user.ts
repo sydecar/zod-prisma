@@ -22,7 +22,6 @@ export const UserModel = UserBaseModel
 
 export const UserCreateModel = UserBaseModel.partial({
   id: true,
-  posts: true,
 })
 
 export const UserUpdateModel = UserBaseModel

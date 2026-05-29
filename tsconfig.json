@@ -19,7 +19,6 @@
     "noUnusedParameters": true
   },
   "exclude": [
-    "examples",
     "test/functional/*/{prisma,actual}",
     "test/usage/usage.ts"
   ]
