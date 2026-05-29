@@ -45,10 +45,13 @@
     "lint:fix": "tsc --noEmit && eslint --fix vitest.config.ts src/*.ts test/*.test.ts test/**/*.test.ts"
   },
   "license": "MIT",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "devDependencies": {
     "@egoist/prettier-config": "1.0.0",
-    "@prisma/client": "^4.0.0",
-    "@prisma/internals": "^4.0.0",
+    "@prisma/client": "^7.0.0",
+    "@prisma/internals": "^7.0.0",
     "@typescript-eslint/eslint-plugin": "^5.30.0",
     "@typescript-eslint/parser": "^5.30.0",
     "decimal.js": "^10.3.1",
@@ -61,7 +64,7 @@
     "fs-jetpack": "4.3.1",
     "husky": "7.0.4",
     "prettier": "2.7.1",
-    "prisma": "^3.15.2",
+    "prisma": "^7.0.0",
     "tsup": "6.1.2",
     "typescript": "4.7.4",
     "vite": "^2.9.13",
@@ -70,13 +73,13 @@
     "zod": "^3.17.3"
   },
   "dependencies": {
-    "@prisma/generator-helper": "^4.0.0",
+    "@prisma/generator-helper": "^7.0.0",
     "parenthesis": "3.1.8",
     "ts-morph": "15.1.0"
   },
   "peerDependencies": {
     "decimal.js": "^10.0.0",
-    "prisma": "^3.0.0 || ^4.0.0",
+    "prisma": "^7.0.0",
     "zod": "^3.0.0"
   },
   "peerDependenciesMeta": {
