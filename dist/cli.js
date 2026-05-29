@@ -26,7 +26,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var version;
 var init_package = __esm({
   "package.json"() {
-    version = "1.0.0";
+    version = "1.0.1";
   }
 });
 
@@ -45,13 +45,7 @@ var init_config = __esm({
       schemaSuffix: import_zod.z.string().default("Schema"),
       schemaCase: import_zod.z.enum(["PascalCase", "camelCase"]).default("camelCase"),
       nodeEsModules: configBoolean.default("false"),
-      excludeCreateUpdate: configBoolean.default("false"),
-      moduleSuffix: import_zod.z.undefined({
-        description: "moduleSuffix was renamed to 'schemaSuffix' in v1.0.0"
-      }),
-      moduleCase: import_zod.z.undefined({
-        description: "moduleCase was renamed to 'schemaCase' in v1.0.0"
-      })
+      excludeCreateUpdate: configBoolean.default("false")
     }).strict("Config cannot contain extra options");
   }
 });
@@ -178,7 +172,7 @@ var init_types = __esm({
         extraModifiers.push(...computeModifiers(field.documentation));
       }
       if (!field.isRequired)
-        extraModifiers.push("nullish()");
+        extraModifiers.push(field.kind === "object" ? "nullable()" : "nullish()");
       return `${zodType}${extraModifiers.join(".")}`;
     };
   }
@@ -301,18 +295,18 @@ var init_schemas = __esm({
             initializer: (writer) => {
               writer.write(`${baseSchema(model.name)}`);
               const partialFields = model.fields.filter(
-                (field) => field.hasDefaultValue || !field.isRequired || field.isGenerated || field.isUpdatedAt || field.isList || model.fields.find(
+                (field) => field.kind !== "object" && (field.hasDefaultValue || !field.isRequired || field.isGenerated || field.isUpdatedAt || field.isList || model.fields.find(
                   (f) => {
                     var _a;
                     return (_a = f.relationFromFields) == null ? void 0 : _a.includes(field.name);
                   }
-                )
+                ))
               );
               if (model.fields.some((f) => !f.isRequired && f.kind !== "object")) {
                 writer.newLine().write(".extend(").inlineBlock(() => {
                   model.fields.filter((f) => !f.isRequired && f.kind !== "object").map((field) => {
                     writer.writeLine(
-                      `${field.name}: ${baseSchema(model.name)}.shape.${field.name}.unwrap(),`
+                      `${field.name}: ${baseSchema(model.name)}.shape.${field.name}.unwrap().unwrap(),`
                     );
                   });
                 }).write(")");
@@ -345,7 +339,7 @@ var init_schemas = __esm({
                 writer.newLine().write(".extend(").inlineBlock(() => {
                   model.fields.filter((f) => !f.isRequired && f.kind !== "object").map((field) => {
                     writer.writeLine(
-                      `${field.name}: ${baseSchema(model.name)}.shape.${field.name}.unwrap(),`
+                      `${field.name}: ${baseSchema(model.name)}.shape.${field.name}.unwrap().unwrap(),`
                     );
                   });
                 }).write(")");

@@ -1,3 +1,4 @@
+// This file was created in whole or in part by Generative AI
 import type { DMMF } from "@prisma/generator-helper"
 import { Config } from "./config"
 import { computeCustomSchema, computeModifiers } from "./docs"
@@ -54,7 +55,12 @@ export const getZodConstructor = (
     zodType = computeCustomSchema(field.documentation) ?? zodType
     extraModifiers.push(...computeModifiers(field.documentation))
   }
-  if (!field.isRequired) extraModifiers.push("nullish()")
+  if (!field.isRequired)
+    // Relations are only emitted in the *Relations schema, whose generated
+    // interface types optional relations as `T | null` (Prisma's actual
+    // output). nullish() would widen them to `| undefined` and break that
+    // type annotation, so relations stay nullable() while scalars use nullish().
+    extraModifiers.push(field.kind === "object" ? "nullable()" : "nullish()")
 
   return `${zodType}${extraModifiers.join(".")}`
 }

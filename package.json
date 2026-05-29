@@ -35,7 +35,7 @@
     "zod-prisma": "dist/cli.js"
   },
   "scripts": {
-    "build-fast": "tsup-node src/cli.ts --format cjs,esm",
+    "build-fast": "tsup-node src/cli.ts --format cjs,esm --clean",
     "build": "pnpm run build-fast",
     "test": "vitest run",
     "test:update": "UPDATE_EXPECTED=true vitest run test/functional/driver.test.ts >/dev/null 2>&1; echo Expected outputs updated.",

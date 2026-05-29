@@ -11,7 +11,7 @@ const jsonSchema: z.ZodSchema<Json> = z.lazy(() =>
 
 export const userBaseSchema = z.object({
   id: z.number().int(),
-  meta: jsonSchema.nullable(),
+  meta: jsonSchema.nullish(),
 })
 
 export interface UserRelations {
@@ -29,16 +29,15 @@ export const userSchema = userBaseSchema
 
 export const userCreateSchema = userBaseSchema
   .extend({
-    meta: userBaseSchema.shape.meta.unwrap(),
+    meta: userBaseSchema.shape.meta.unwrap().unwrap(),
   }).partial({
     id: true,
     meta: true,
-    posts: true,
   })
 
 export const userUpdateSchema = userBaseSchema
   .extend({
-    meta: userBaseSchema.shape.meta.unwrap(),
+    meta: userBaseSchema.shape.meta.unwrap().unwrap(),
   })
   .partial()
   

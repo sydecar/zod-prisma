@@ -33,7 +33,6 @@ export const spreadsheetSchema = spreadsheetBaseSchema
 
 export const spreadsheetCreateSchema = spreadsheetBaseSchema.partial({
   id: true,
-  presentations: true,
   created: true,
   updated: true,
 })

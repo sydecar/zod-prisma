@@ -4,7 +4,7 @@ import { Project } from "ts-morph";
 import { SemicolonPreference } from "typescript";
 
 // package.json
-var version = "1.0.0";
+var version = "1.0.1";
 
 // src/config.ts
 import { z } from "zod";
@@ -17,13 +17,7 @@ var configSchema = z.object({
   schemaSuffix: z.string().default("Schema"),
   schemaCase: z.enum(["PascalCase", "camelCase"]).default("camelCase"),
   nodeEsModules: configBoolean.default("false"),
-  excludeCreateUpdate: configBoolean.default("false"),
-  moduleSuffix: z.undefined({
-    description: "moduleSuffix was renamed to 'schemaSuffix' in v1.0.0"
-  }),
-  moduleCase: z.undefined({
-    description: "moduleCase was renamed to 'schemaCase' in v1.0.0"
-  })
+  excludeCreateUpdate: configBoolean.default("false")
 }).strict("Config cannot contain extra options");
 
 // src/generator.ts
@@ -141,7 +135,7 @@ var getZodConstructor = (config, field, getRelatedSchemaName = (name) => name) =
     extraModifiers.push(...computeModifiers(field.documentation));
   }
   if (!field.isRequired)
-    extraModifiers.push("nullish()");
+    extraModifiers.push(field.kind === "object" ? "nullable()" : "nullish()");
   return `${zodType}${extraModifiers.join(".")}`;
 };
 
@@ -254,18 +248,18 @@ var generateCreateSchema = (model, sourceFile, config, _prismaOptions) => {
         initializer: (writer) => {
           writer.write(`${baseSchema(model.name)}`);
           const partialFields = model.fields.filter(
-            (field) => field.hasDefaultValue || !field.isRequired || field.isGenerated || field.isUpdatedAt || field.isList || model.fields.find(
+            (field) => field.kind !== "object" && (field.hasDefaultValue || !field.isRequired || field.isGenerated || field.isUpdatedAt || field.isList || model.fields.find(
               (f) => {
                 var _a;
                 return (_a = f.relationFromFields) == null ? void 0 : _a.includes(field.name);
               }
-            )
+            ))
           );
           if (model.fields.some((f) => !f.isRequired && f.kind !== "object")) {
             writer.newLine().write(".extend(").inlineBlock(() => {
               model.fields.filter((f) => !f.isRequired && f.kind !== "object").map((field) => {
                 writer.writeLine(
-                  `${field.name}: ${baseSchema(model.name)}.shape.${field.name}.unwrap(),`
+                  `${field.name}: ${baseSchema(model.name)}.shape.${field.name}.unwrap().unwrap(),`
                 );
               });
             }).write(")");
@@ -298,7 +292,7 @@ var generateUpdateSchema = (model, sourceFile, config, _prismaOptions) => {
             writer.newLine().write(".extend(").inlineBlock(() => {
               model.fields.filter((f) => !f.isRequired && f.kind !== "object").map((field) => {
                 writer.writeLine(
-                  `${field.name}: ${baseSchema(model.name)}.shape.${field.name}.unwrap(),`
+                  `${field.name}: ${baseSchema(model.name)}.shape.${field.name}.unwrap().unwrap(),`
                 );
               });
             }).write(")");
@@ -338,8 +332,8 @@ var writeImportsForModel = (model, sourceFile, config, { schemaPath, outputPath 
   if (config.decimalJs && model.fields.some((f) => f.type === "Decimal")) {
     importList.push({
       kind: StructureKind.ImportDeclaration,
-      namedImports: ["Decimal"],
-      moduleSpecifier: "decimal.js"
+      namedImports: ["Prisma"],
+      moduleSpecifier: "@prisma/client"
     });
   }
   const enumFields = model.fields.filter((f) => f.kind === "enum");
@@ -397,8 +391,8 @@ var writeTypeSpecificSchemas = (model, sourceFile, config, _prismaOptions) => {
       writeArray(writer, [
         "// Helper schema for Decimal fields",
         "const decimalSchema = z",
-        ".instanceof(Decimal)",
-        ".transform((value) => value.toNumber());"
+        ".union([z.number(), z.instanceof(Prisma.Decimal)])",
+        ".transform((value) => value instanceof Prisma.Decimal ? value.toNumber() : value);"
       ]);
     });
   }

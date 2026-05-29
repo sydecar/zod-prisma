@@ -4,7 +4,7 @@ import { addressTypeSchema } from "./addresstype"
 export const addressBaseSchema = z.object({
   id: z.string(),
   type: addressTypeSchema,
-  company: z.string().min(1).max(50).nullable(),
+  company: z.string().min(1).max(50).nullish(),
   address: z.string().min(1).max(50),
   zipCode: z.string().min(1).max(10),
   city: z.string().min(1).max(50),
@@ -15,7 +15,7 @@ export const addressSchema = addressBaseSchema
 
 export const addressCreateSchema = addressBaseSchema
   .extend({
-    company: addressBaseSchema.shape.company.unwrap(),
+    company: addressBaseSchema.shape.company.unwrap().unwrap(),
   }).partial({
     id: true,
     company: true,
@@ -23,7 +23,7 @@ export const addressCreateSchema = addressBaseSchema
 
 export const addressUpdateSchema = addressBaseSchema
   .extend({
-    company: addressBaseSchema.shape.company.unwrap(),
+    company: addressBaseSchema.shape.company.unwrap().unwrap(),
   })
   .partial()
   

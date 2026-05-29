@@ -25,8 +25,6 @@ export const commentSchema = commentBaseSchema
 export const commentCreateSchema = commentBaseSchema.partial({
   id: true,
   parentId: true,
-  parent: true,
-  children: true,
 })
 
 export const commentUpdateSchema = commentBaseSchema
